@@ -2,7 +2,7 @@
 
 session_start();
 
-require_once "config/database.php";
+require_once __DIR__ . "/database.php";
 
 $error = "";
 
@@ -13,7 +13,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     $stmt = $conn->prepare(
-        "SELECT id, full_name, email, username, password
+        "SELECT id,
+                CONCAT_WS(' ', first_name, NULLIF(middle_name, ''), last_name) AS full_name,
+                email, username, password
          FROM users
          WHERE username = ?
          LIMIT 1"
@@ -84,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <title>Sign In | SUN SON SOLAR</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 
 </head>
 

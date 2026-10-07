@@ -1,6 +1,6 @@
 <?php
 
-require_once "config/database.php";
+require_once __DIR__ . "/database.php";
 
 $message = "";
 $message_type = "";
@@ -8,6 +8,9 @@ $message_type = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $full_name = trim($_POST["full_name"]);
+    $name_parts = preg_split('/\s+/', $full_name, 2);
+    $first_name = $name_parts[0] ?? "";
+    $last_name = $name_parts[1] ?? $first_name;
     $email = trim($_POST["email"]);
     $username = trim($_POST["username"]);
     $password = $_POST["password"];
@@ -55,13 +58,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Insert user
             $stmt = $conn->prepare(
                 "INSERT INTO users
-                (full_name, email, username, password)
-                VALUES (?, ?, ?, ?)"
+                (first_name, last_name, email, username, password)
+                VALUES (?, ?, ?, ?, ?)"
             );
 
             $stmt->bind_param(
-                "ssss",
-                $full_name,
+                "sssss",
+                $first_name,
+                $last_name,
                 $email,
                 $username,
                 $hashed_password
@@ -103,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <title>Register | SUN SON SOLAR</title>
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 
 </head>
 
